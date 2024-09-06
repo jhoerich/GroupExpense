@@ -7,4 +7,5 @@ export const TYPES = {
     IGruppeFactory: Symbol.for("IGruppeFactory"),
     IAuthController: Symbol.for("IAuthController"),
     IGroupController: Symbol.for("IGroupController"),
+    IEventManager: Symbol.for("IEventManager"),
 };

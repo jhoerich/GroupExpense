@@ -29,6 +29,11 @@ dataSource.initialize()
         const router = Router()
         registerRoutes(router);
 
+        app.use((req, res, next) => {
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            next();
+        });
+
         app.use("/api/", router);
 
         app.listen(port, () => {
