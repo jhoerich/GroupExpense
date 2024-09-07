@@ -7,6 +7,7 @@ import {Waehrung} from "./models/waehrung";
 import {BenutzerGruppeZuordnung} from "./models/benutzerGruppeZuordnung";
 import {Ausgabe} from "./models/ausgabe";
 import {AusgabeBenutzerZuordnung} from "./models/ausgabeBenutzerZuordnung";
+import {Einladung} from "./models/einladung";
 
 export const dataSource = new DataSource({
     type: "postgres",
@@ -15,7 +16,7 @@ export const dataSource = new DataSource({
     username: "janekhoricht",
     database: "groupexpense",
     synchronize: true,
-    entities: [Benutzer,Gruppe, Waehrung, BenutzerGruppeZuordnung, Ausgabe, AusgabeBenutzerZuordnung],
+    entities: [Benutzer,Gruppe, Waehrung, BenutzerGruppeZuordnung, Ausgabe, AusgabeBenutzerZuordnung, Einladung],
     migrations: [],
     subscribers: []
 })

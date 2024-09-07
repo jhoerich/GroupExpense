@@ -14,9 +14,9 @@ import {IWebApiRequest} from "../../framework/webApiRequest";
 @injectable()
 export class AuthController implements IAuthController {
     constructor(
+        @inject(TYPES.IBenutzerRepository) private repository: IBenutzerRepository,
         @inject(TYPES.IAuthService) private service: IAuthService,
-        @inject(TYPES.IBenutzerFactory) private factoy: IBenutzerFactory,
-        @inject(TYPES.IBenutzerRepository) private repository: IBenutzerRepository) {
+        @inject(TYPES.IBenutzerFactory) private factoy: IBenutzerFactory) {
     }
 
     async register(req: Request, res: Response) {

@@ -9,5 +9,7 @@ export class GroupRoutes {
         const controller = container.get<IGroupController>(TYPES.IGroupController);
         const authController = container.get<IAuthController>(TYPES.IAuthController);
         router.post("/group", authController.midlewareToken, controller.create.bind(controller));
+        router.put("/invite", authController.midlewareToken, controller.einladen.bind(controller));
+        //router.get("/join/:inviteId", authController.midlewareToken, )
     }
 }

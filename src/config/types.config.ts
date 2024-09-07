@@ -8,4 +8,6 @@ export const TYPES = {
     IAuthController: Symbol.for("IAuthController"),
     IGroupController: Symbol.for("IGroupController"),
     IEventManager: Symbol.for("IEventManager"),
+    //IEinladungRepository: Symbol.for("IEinladungRepository"),
+    //IInviteManager: Symbol.for("IInviteManager"),
 };

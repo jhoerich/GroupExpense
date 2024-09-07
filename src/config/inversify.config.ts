@@ -18,16 +18,27 @@ import {GroupController} from "../controllers/group/groupController";
 import {IGroupController} from "../interfaces/iGroupController";
 import {IEventManager} from "../interfaces/iEventManager";
 import {EventManager} from "../event/eventManager";
+import {IInviteManager} from "../interfaces/iInviteManager";
+import {InviteManager} from "../invite/inviteManager";
+import {IEinladungRepository} from "../interfaces/iEinladungRepository";
+import {EinladungRepository} from "../repositories/einladungRepository";
 
 const container = new Container();
 container.bind<IBenutzerRepository>(TYPES.IBenutzerRepository).to(BenutzerRepository);
+container.bind<IGruppeRepository>(TYPES.IGruppeRepository).to(GruppeRepository);
+//container.bind<IEinladungRepository>(TYPES.IEinladungRepository).to(EinladungRepository);
+
 container.bind<IBenutzerFactory>(TYPES.IBenutzerFactory).to(BenutzerFactory);
 container.bind<IGruppeFactory>(TYPES.IGruppeFactory).to(GruppeFactory);
-container.bind<IGruppeRepository>(TYPES.IGruppeRepository).to(GruppeRepository);
+
 container.bind<IGruppeService>(TYPES.IGruppeService).to(GruppeService)
 container.bind<IAuthService>(TYPES.IAuthService).to(AuthService);
-container.bind<IGroupController>(TYPES.IGroupController).to(GroupController)
-container.bind<IAuthController>(TYPES.IAuthController).to(AuthController);
+
 container.bind<IEventManager>(TYPES.IEventManager).to(EventManager);
+//container.bind<IInviteManager>(TYPES.IInviteManager).to(InviteManager);
+
+container.bind<IAuthController>(TYPES.IAuthController).to(AuthController);
+container.bind<IGroupController>(TYPES.IGroupController).to(GroupController);
+
 export { container };
 
