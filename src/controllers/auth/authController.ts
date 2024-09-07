@@ -11,6 +11,7 @@ import {IWebApiRequest} from "../../framework/webApiRequest";
 import {inject, injectable} from "tsyringe";
 import {Tokens} from "../../config/tokens";
 import {registerAs} from "../../utils/decorator";
+import {InvalidOrExpiredTokenError, LoginNotPossibleError} from "../../error/authError";
 
 @registerAs(Tokens.authController)
 @injectable()
@@ -39,10 +40,10 @@ export class AuthController implements IAuthController {
         const request = req.body as AuthLoginWebApiRequest;
         const benutzer = await this.repository.ermittleBenutzerZumBenutzernamen(request.benutzername);
         if (benutzer == null) {
-            return res.status(404).json({errors: "Es konnte sich nicht angemeldet werden!"})
+            return res.status(404).json({error : new LoginNotPossibleError()});
         }
         if (!(await bcrypt.compare(request.password, benutzer.passwortHash))) {
-            return res.status(404).json({errors: "Es konnte sich nicht angemeldet werden!"})
+            return res.status(404).json({error: new LoginNotPossibleError()});
         }
         const token = generateToken(benutzer.id)
         const longTermToken = generateLongTermToken(benutzer.id);
@@ -56,7 +57,7 @@ export class AuthController implements IAuthController {
             if(err) {
                 verifyToken(request.longTermToken, (err, decoded) => {
                     if(err) {
-                        return res.status(401).json({errors: "invalid token!"})
+                        return res.status(401).json({error: new InvalidOrExpiredTokenError()})
                     }
                     token = generateToken(decoded.userId);
                 })
@@ -69,11 +70,11 @@ export class AuthController implements IAuthController {
         const request = req.body as IWebApiRequest;
         const token = request.token;
         if(token == undefined) {
-            return res.status(401).json({errors: "invalid token!"})
+            return res.status(401).json({error: new InvalidOrExpiredTokenError()})
         }
         verifyToken(token, (err) => {
             if (err) {
-                return res.status(403).json({ message: 'Invalid or expired token!'});
+                return res.status(403).json({ error: new InvalidOrExpiredTokenError()});
             }
             next();
         })

@@ -2,7 +2,7 @@ import {UUID} from "node:crypto";
 import {Benutzer} from "../models/benutzer";
 
 export interface IBenutzerRepository {
-    ladeBenutzer(benutzerId : UUID) : Promise<Benutzer>;
+    ladeBenutzer(benutzerId : UUID) : Promise<Benutzer | null>;
     ermittleBenutzerZumBenutzernamen(name : string) : Promise<Benutzer | null>;
     ermittleBenutzerZurMail(mail : string) : Promise<Benutzer | null>;
 }

@@ -11,6 +11,7 @@ import {UUID} from "node:crypto";
 import {IEventManager} from "../../interfaces/iEventManager";
 import {AusgabeAngelegtEvent} from "../../event/events/ausgabeAngelegtEvent";
 import {IExpenseController} from "../../interfaces/IExpenseController";
+import {GroupNotFoundError} from "../../error/entityError";
 
 @registerAs(Tokens.expenseController)
 @injectable()
@@ -29,12 +30,16 @@ export class ExpenseController extends BaseController implements IExpenseControl
         const benutzerId = getUserId(request.token);
         const dto = request.dto;
         const gruppeMitBenutzern = await this.gruppeRepository.ladeGruppeFuerAusgabeHinzufuegen(groupId as UUID, benutzerId)
+        if(gruppeMitBenutzern == null) {
+            return res.status(404).json({error:new GroupNotFoundError()})
+        }
         await this.factory.create(dto, gruppeMitBenutzern.benutzerGruppenZuordnungen[0].id)
         const benutzerIds = dto.aufteilungDtos.flatMap((c ) => {
             return c.benutzerId
         });
+
         const event = new AusgabeAngelegtEvent(benutzerIds, groupId as UUID)
         this.eventManager.sendEventToAllClients(event)
-        return res.status(200).json({message: "Ausgabe hinzugefügt!"})
+        return res.status(200).json({message: "Expense added!"})
     }
 }

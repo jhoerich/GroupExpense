@@ -8,12 +8,8 @@ import {Tokens} from "../config/tokens";
 @registerAs(Tokens.benutzerRepository)
 @singleton()
 export class BenutzerRepository implements IBenutzerRepository {
-    async ladeBenutzer(benutzerId : UUID) : Promise<Benutzer> {
-        const benutzer = await Benutzer.findOneBy({id:benutzerId})
-        if (benutzer == null) {
-            throw new Error("Benutzer not found.");
-        }
-        return benutzer;
+    async ladeBenutzer(benutzerId : UUID) : Promise<Benutzer | null> {
+        return await Benutzer.findOneBy({id:benutzerId});
     }
 
     async ermittleBenutzerZumBenutzernamen(name : string) : Promise<Benutzer | null>{
