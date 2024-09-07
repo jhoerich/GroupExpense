@@ -2,8 +2,12 @@ import {EventClient} from "./eventClient";
 import {Request, Response} from "express";
 import {IEventRequet} from "./eventRequet";
 import {IEventManager} from "../interfaces/iEventManager";
-import {injectable} from "inversify";
+import {injectable} from "tsyringe";
+import {registerAs} from "../utils/decorator";
+import {Tokens} from "../config/tokens";
+import {ServerEvent} from "./serverEvent";
 
+@registerAs(Tokens.eventManager)
 @injectable()
 export class EventManager implements IEventManager {
     private clients : EventClient[] = [];
@@ -24,7 +28,7 @@ export class EventManager implements IEventManager {
         this.clients.splice(this.clients.indexOf(client), 1);
     }
 
-    sendEventToAllClients(event : Event) {
+    sendEventToAllClients(event : ServerEvent) {
         this.clients.forEach(client => {
             client.response.write({event: event});
         })

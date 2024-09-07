@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import express, {Router} from "express";
 import { DataSource} from "typeorm";
 import { Benutzer } from "./models/benutzer";
@@ -8,8 +9,9 @@ import {BenutzerGruppeZuordnung} from "./models/benutzerGruppeZuordnung";
 import {Ausgabe} from "./models/ausgabe";
 import {AusgabeBenutzerZuordnung} from "./models/ausgabeBenutzerZuordnung";
 import {Einladung} from "./models/einladung";
+import {initAll} from "./configure";
 
-export const dataSource = new DataSource({
+const dataSource = new DataSource({
     type: "postgres",
     host: "localhost",
     port: 5432,
@@ -19,16 +21,22 @@ export const dataSource = new DataSource({
     entities: [Benutzer,Gruppe, Waehrung, BenutzerGruppeZuordnung, Ausgabe, AusgabeBenutzerZuordnung, Einladung],
     migrations: [],
     subscribers: []
-})
+});
+
+async function bootstrap() {
+    await initAll();
+}
+
+bootstrap()
 
 dataSource.initialize()
     .then(() => {
         const app = express();
-
         app.use(express.json())
 
         const port = process.env.PORT || 3000;
-        const router = Router()
+        const router = Router();
+
         registerRoutes(router);
 
         app.use((req, res, next) => {

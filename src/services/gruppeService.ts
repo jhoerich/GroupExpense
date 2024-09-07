@@ -2,9 +2,12 @@ import {IGruppeService} from "../interfaces/iGruppeService";
 import { GruppeAnlegenWebApiRequest } from "../controllers/group/gruppeAnlegenWebApiRequest";
 import {ifEmpty} from "../utils/validator";
 import {pushRange} from "../utils/list";
-import {injectable} from "inversify";
+import {singleton} from "tsyringe";
+import {registerAs} from "../utils/decorator";
+import {Tokens} from "../config/tokens";
 
-@injectable()
+@registerAs(Tokens.gruppeService)
+@singleton()
 export class GruppeService implements IGruppeService {
     validate(request: GruppeAnlegenWebApiRequest): string[] {
         const errors : string[] = [];

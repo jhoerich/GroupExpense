@@ -1,11 +1,11 @@
 import {Router} from "express";
-import {container} from "../config/inversify.config";
 import {IEventManager} from "../interfaces/iEventManager";
-import {TYPES} from "../config/types.config";
+import {container} from "tsyringe";
+import {Tokens} from "../config/tokens";
 
 export class EventRoutes {
     registerEventRoutes(router : Router) {
-        const eventManager = container.get<IEventManager>(TYPES.IEventManager);
+        const eventManager = container.resolve<IEventManager>(Tokens.eventManager);
         router.get('/events', eventManager.onConnect.bind(eventManager));
     }
 }
