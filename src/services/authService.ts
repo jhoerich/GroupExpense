@@ -1,14 +1,18 @@
 import {AuthRegisterWebApiRequest} from "../controllers/auth/authRegisterWebApiRequest";
 import {ifEmpty, isValidEmail} from "../utils/validator";
 import {pushRange} from "../utils/list";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../config/types.config";
 import {IAuthService} from "../interfaces/iAuthService";
-import {IBenutzerRepository} from "../interfaces/iBenutzerRepository";
+import { injectable, inject } from 'tsyringe';
+import {BenutzerRepository} from "../repositories/benutzerRepository";
+import {Tokens} from "../config/tokens";
+import {registerAs} from "../utils/decorator";
 
+@registerAs(Tokens.authService)
 @injectable()
 export class AuthService implements IAuthService {
-    constructor(@inject(TYPES.IBenutzerRepository) private repository : IBenutzerRepository) {
+    constructor(
+        @inject(Tokens.benutzerRepository) private readonly repository : BenutzerRepository)
+    {
     }
 
     async validateForRegistration(request: AuthRegisterWebApiRequest) : Promise<string[]> {

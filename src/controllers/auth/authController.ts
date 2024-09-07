@@ -1,7 +1,5 @@
 import {NextFunction, Request, Response} from "express";
 import {AuthRegisterWebApiRequest} from "./authRegisterWebApiRequest";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../../config/types.config";
 import bcrypt from 'bcrypt';
 import {generateLongTermToken, generateToken, verifyToken} from "../../utils/token";
 import {AuthLoginWebApiRequest} from "./authLoginWebApiRequest";
@@ -10,13 +8,17 @@ import {IAuthService} from "../../interfaces/iAuthService";
 import {IBenutzerFactory} from "../../interfaces/iBenutzerFactory";
 import {IBenutzerRepository} from "../../interfaces/iBenutzerRepository";
 import {IWebApiRequest} from "../../framework/webApiRequest";
+import {inject, injectable} from "tsyringe";
+import {Tokens} from "../../config/tokens";
+import {registerAs} from "../../utils/decorator";
 
+@registerAs(Tokens.authController)
 @injectable()
 export class AuthController implements IAuthController {
     constructor(
-        @inject(TYPES.IAuthService) private service: IAuthService,
-        @inject(TYPES.IBenutzerFactory) private factoy: IBenutzerFactory,
-        @inject(TYPES.IBenutzerRepository) private repository: IBenutzerRepository) {
+        @inject(Tokens.benutzerRepository) private readonly repository: IBenutzerRepository,
+        @inject(Tokens.authService) private readonly service: IAuthService,
+        @inject(Tokens.benutzerFactory) private readonly factoy: IBenutzerFactory) {
     }
 
     async register(req: Request, res: Response) {

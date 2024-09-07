@@ -1,9 +1,12 @@
 import {UUID} from "node:crypto";
 import {Benutzer} from "../models/benutzer";
-import {injectable} from "inversify";
 import {IBenutzerRepository} from "../interfaces/iBenutzerRepository";
+import {singleton} from "tsyringe";
+import {registerAs} from "../utils/decorator";
+import {Tokens} from "../config/tokens";
 
-@injectable()
+@registerAs(Tokens.benutzerRepository)
+@singleton()
 export class BenutzerRepository implements IBenutzerRepository {
     async ladeBenutzer(benutzerId : UUID) : Promise<Benutzer> {
         const benutzer = await Benutzer.findOneBy({id:benutzerId})
