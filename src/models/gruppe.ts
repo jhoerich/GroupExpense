@@ -1,4 +1,4 @@
-import {Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany} from "typeorm";
+import {Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, RelationId} from "typeorm";
 import 'reflect-metadata';
 import {UUID} from "node:crypto";
 import {Benutzer} from "./benutzer";
@@ -15,6 +15,25 @@ export class Gruppe extends BaseEntity {
     @ManyToOne(() => Benutzer, (c) => c.gruppen)
     benutzer!: Benutzer
 
+    @Column('uuid')
+    @RelationId((gruppe : Gruppe) => gruppe.benutzer)
+    benutzerId!: UUID
+
     @OneToMany(() => BenutzerGruppeZuordnung, (c) => c.gruppe)
     benutzerGruppenZuordnungen!: BenutzerGruppeZuordnung[];
+
+    static async createGruppe(bezeichnung : string, benutzerId : UUID) : Promise<Gruppe> {
+        const gruppe = new Gruppe();
+        gruppe.bezeichnung = bezeichnung;
+        gruppe.benutzerId = benutzerId;
+        gruppe.benutzerGruppenZuordnungen = [];
+        await gruppe.save();
+        gruppe.benutzerGruppenZuordnungen.push(await BenutzerGruppeZuordnung.createZuordnung(benutzerId, gruppe.id, new Date(), new Date()))
+        return gruppe;
+    }
+
+    async fuegeBenutzerHinzu(benutzerId : UUID, sollBerechnetWerdenAb : Date | null) : Promise<void> {
+        const zuo = await BenutzerGruppeZuordnung.createZuordnung(benutzerId, this.id, new Date(), sollBerechnetWerdenAb ?? new Date());
+        this.benutzerGruppenZuordnungen.push(zuo);
+    }
 }
