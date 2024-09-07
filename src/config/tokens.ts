@@ -5,6 +5,7 @@ export const Tokens = Object.freeze({
 
     benutzerFactory: "benutzerFactory",
     gruppeFactory: "gruppeFactory",
+    ausgabeFactory: "ausgabeFactory",
 
     gruppeService: "gruppeService",
     authService: "authService",
@@ -14,5 +15,6 @@ export const Tokens = Object.freeze({
 
     authController: "authController",
     groupController: "groupController",
-    inviteController: "inviteController"
+    inviteController: "inviteController",
+    expenseController: "expenseController"
 })
