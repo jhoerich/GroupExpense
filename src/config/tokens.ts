@@ -13,5 +13,6 @@ export const Tokens = Object.freeze({
     eventManager: "eventManager",
 
     authController: "authController",
-    groupController: "groupController"
+    groupController: "groupController",
+    inviteController: "inviteController"
 })

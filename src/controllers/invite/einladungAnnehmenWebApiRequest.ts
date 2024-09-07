@@ -1,6 +1,6 @@
 import {IWebApiRequest} from "../../framework/webApiRequest";
 
-export class GruppeBeitretenWebApiRequest implements IWebApiRequest{
+export class EinladungAnnehmenWebApiRequest implements IWebApiRequest{
     constructor(
         public token: string,
         public longTermToken: string,
