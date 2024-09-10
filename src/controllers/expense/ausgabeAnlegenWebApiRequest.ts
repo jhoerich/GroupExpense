@@ -4,7 +4,6 @@ import {UUID} from "node:crypto";
 export class AusgabeAnlegenWebApiRequest implements IWebApiRequest{
     constructor(
         public token : string,
-        public longTermToken : string,
         public dto : AusgabeAnlegenDto
     ) {
     }

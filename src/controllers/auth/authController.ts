@@ -12,6 +12,7 @@ import {inject, injectable} from "tsyringe";
 import {Tokens} from "../../config/tokens";
 import {registerAs} from "../../utils/decorator";
 import {InvalidOrExpiredTokenError, LoginNotPossibleError} from "../../error/authError";
+import {AuthRefreshWebApiRequest} from "./authRefreshWebApiRequest";
 
 @registerAs(Tokens.authController)
 @injectable()
@@ -37,6 +38,7 @@ export class AuthController implements IAuthController {
     }
 
     async login(req: Request, res: Response) {
+        console.log("Hello World")
         const request = req.body as AuthLoginWebApiRequest;
         const benutzer = await this.repository.ermittleBenutzerZumBenutzernamen(request.benutzername);
         if (benutzer == null) {
@@ -51,7 +53,7 @@ export class AuthController implements IAuthController {
     }
 
     refresh(req : Request, res: Response) {
-        const request = req.body as IWebApiRequest;
+        const request = req.body as AuthRefreshWebApiRequest;
         let token = request.token;
         verifyToken(token, (err) => {
             if(err) {
