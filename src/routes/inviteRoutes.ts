@@ -8,7 +8,7 @@ export class InviteRoutes {
     registerInviteRoutes(router: Router) {
         const controller = container.resolve<IInviteController>(Tokens.inviteController);
         const authController = container.resolve<IAuthController>(Tokens.authController);
-        router.post("/invite", authController.midlewareToken, controller.einladen.bind(controller));
+        router.post("/invite",  controller.einladen.bind(controller));
         router.put("/join/:token", controller.beitreten.bind(controller));
     }
 }

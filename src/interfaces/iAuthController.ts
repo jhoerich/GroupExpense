@@ -1,8 +1,10 @@
-import {NextFunction, Request, Response} from "express";
+import {NextFunction, Response} from "express";
+import {ApiRequest} from "../framework/apiRequest";
+import {AuthRequest} from "../framework/requestTypes/authRequest";
 
 export interface IAuthController {
-    register(req: Request, res: Response) :  Promise<Response | undefined>;
-    login(req: Request, res: Response) :  Promise<Response | undefined>;
-    midlewareToken(req: Request, res: Response, next: NextFunction) : void;
-    refresh(req : Request, res: Response) : void;
+    register(req: AuthRequest, res: Response) :  Promise<Response | undefined>;
+    login(req: AuthRequest, res: Response) :  Promise<Response | undefined>;
+    midlewareToken(req: ApiRequest, res: Response, next: NextFunction) : void;
+    refresh(req : AuthRequest, res: Response) : void;
 }

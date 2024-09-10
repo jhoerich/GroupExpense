@@ -1,18 +1,19 @@
-import {NextFunction, Request, Response} from "express";
-import {AuthRegisterWebApiRequest} from "./authRegisterWebApiRequest";
+import {NextFunction, Response} from "express";
 import bcrypt from 'bcrypt';
 import {generateLongTermToken, generateToken, verifyToken} from "../../utils/token";
-import {AuthLoginWebApiRequest} from "./authLoginWebApiRequest";
 import {IAuthController} from "../../interfaces/iAuthController";
 import {IAuthService} from "../../interfaces/iAuthService";
 import {IBenutzerFactory} from "../../interfaces/iBenutzerFactory";
 import {IBenutzerRepository} from "../../interfaces/iBenutzerRepository";
-import {IWebApiRequest} from "../../framework/webApiRequest";
 import {inject, injectable} from "tsyringe";
 import {Tokens} from "../../config/tokens";
 import {registerAs} from "../../utils/decorator";
 import {InvalidOrExpiredTokenError, LoginNotPossibleError} from "../../error/authError";
-import {AuthRefreshWebApiRequest} from "./authRefreshWebApiRequest";
+import {ApiRequest} from "../../framework/apiRequest";
+import {AuthLoginBody} from "./bodies/authLoginBody";
+import {AuthRegisterBody} from "./bodies/authRegisterBody";
+import {AuthRefreshBody} from "./bodies/authRefreshBody";
+import {AuthRequest} from "../../framework/requestTypes/authRequest";
 
 @registerAs(Tokens.authController)
 @injectable()
@@ -23,41 +24,46 @@ export class AuthController implements IAuthController {
         @inject(Tokens.benutzerFactory) private readonly factoy: IBenutzerFactory) {
     }
 
-    async register(req: Request, res: Response) {
-        const request = req.body as AuthRegisterWebApiRequest;
-        const validationErrors = await this.service.validateForRegistration(request);
+    async register(req: AuthRequest, res: Response) {
+        const body = req.getCastedBody<AuthRegisterBody>();
+        const validationErrors = await this.service.validateForRegistration(body);
         if (validationErrors.length > 0) {
             return res.status(409).json({errors: validationErrors});
         }
-        const hashedPassword = await this.getHashedPasswort(request.password1);
-        const benutzer = await this.factoy.erzeugeBenutzer(request.benutzername,
-            request.email, hashedPassword);
+
+        const hashedPassword = await this.getHashedPasswort(body.password1);
+        const benutzer = await this.factoy.erzeugeBenutzer(body.benutzername,
+            body.email, hashedPassword);
+
         const token = generateToken(benutzer.id)
         const longtermToken = generateLongTermToken(benutzer.id);
         return res.status(200).json({benutzerId: benutzer.id, token: token, longtermToken: longtermToken});
     }
 
-    async login(req: Request, res: Response) {
-        console.log("Hello World")
-        const request = req.body as AuthLoginWebApiRequest;
-        const benutzer = await this.repository.ermittleBenutzerZumBenutzernamen(request.benutzername);
+    async login(req: AuthRequest, res: Response) {
+        const body = req.getCastedBody<AuthLoginBody>();
+        const benutzer = await this.repository.ermittleBenutzerZumBenutzernamen(body.username);
+
+        console.log(benutzer)
         if (benutzer == null) {
             return res.status(404).json({error : new LoginNotPossibleError()});
         }
-        if (!(await bcrypt.compare(request.password, benutzer.passwortHash))) {
+
+        if (!(await bcrypt.compare(body.password, benutzer.passwortHash))) {
             return res.status(404).json({error: new LoginNotPossibleError()});
         }
+
         const token = generateToken(benutzer.id)
         const longTermToken = generateLongTermToken(benutzer.id);
         return res.status(200).json({benutzerId: benutzer.id, token: token, longTermToken:longTermToken});
     }
 
-    refresh(req : Request, res: Response) {
-        const request = req.body as AuthRefreshWebApiRequest;
-        let token = request.token;
+    refresh(req : AuthRequest, res: Response) {
+        const body = req.getCastedBody<AuthRefreshBody>();
+        let token = body.token;
         verifyToken(token, (err) => {
             if(err) {
-                verifyToken(request.longTermToken, (err, decoded) => {
+                verifyToken(body.longTermToken, (err, decoded) => {
                     if(err) {
                         return res.status(401).json({error: new InvalidOrExpiredTokenError()})
                     }
@@ -65,11 +71,11 @@ export class AuthController implements IAuthController {
                 })
             }
         })
-        return res.status(200).json({token:token, longTermToken:request.longTermToken});
+        return res.status(200).json({token:token, longTermToken:body.longTermToken});
     }
 
-    midlewareToken(req: Request, res: Response, next: NextFunction) {
-        const request = req.body as IWebApiRequest;
+    midlewareToken(req: ApiRequest, res: Response, next: NextFunction) {
+        const request = req.body as any;
         const token = request.token;
         if(token == undefined) {
             return res.status(401).json({error: new InvalidOrExpiredTokenError()})

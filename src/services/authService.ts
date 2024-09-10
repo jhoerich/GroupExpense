@@ -1,4 +1,3 @@
-import {AuthRegisterWebApiRequest} from "../controllers/auth/authRegisterWebApiRequest";
 import {ifEmpty, isValidEmail} from "../utils/validator";
 import {pushRange} from "../utils/list";
 import {IAuthService} from "../interfaces/iAuthService";
@@ -13,6 +12,7 @@ import {
     EmailTooLongError,
     EmailWrongFormatError, PasswordIsNotIdenticError, UsernameIsAlreadyInUse, TextNotFoundError, UsernameTooLongError
 } from "../error/validationError";
+import {AuthRegisterBody} from "../controllers/auth/bodies/authRegisterBody";
 
 @registerAs(Tokens.authService)
 @injectable()
@@ -22,7 +22,7 @@ export class AuthService implements IAuthService {
     {
     }
 
-    async validateForRegistration(request: AuthRegisterWebApiRequest) : Promise<Error[]> {
+    async validateForRegistration(request: AuthRegisterBody) : Promise<Error[]> {
         const validationErrors : Error[] = [];
         pushRange(await this.validateEmail(request.email), validationErrors)
         pushRange(await this.validateBenutzername(request.benutzername), validationErrors)

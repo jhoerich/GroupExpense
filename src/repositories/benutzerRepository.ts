@@ -13,7 +13,12 @@ export class BenutzerRepository implements IBenutzerRepository {
     }
 
     async ermittleBenutzerZumBenutzernamen(name : string) : Promise<Benutzer | null>{
-        return await Benutzer.findOneBy({benutzername:name})
+        console.log(name);
+        return await Benutzer
+            .createQueryBuilder("benutzer")
+            .where("benutzer.benutzername = :name")
+            .setParameter("name", name)
+            .getOne()
     }
 
     async ermittleBenutzerZurMail(mail : string) : Promise<Benutzer | null> {

@@ -1,6 +1,6 @@
-import {AuthRegisterWebApiRequest} from "../controllers/auth/authRegisterWebApiRequest";
 import {Error} from "../error/error";
+import {AuthRegisterBody} from "../controllers/auth/bodies/authRegisterBody";
 
 export interface IAuthService {
-    validateForRegistration(request: AuthRegisterWebApiRequest) : Promise<Error[]>
+    validateForRegistration(body: AuthRegisterBody) : Promise<Error[]>
 }

@@ -9,7 +9,7 @@ export class ExpenseRoutes {
         const authController = container.resolve<IAuthController>(Tokens.authController);
         const expenseController = container.resolve<IExpenseController>(Tokens.expenseController)
         const expenseRouterForGroups = Router();
-        expenseRouterForGroups.post("/:groupId/expense", authController.midlewareToken, expenseController.create.bind(expenseController));
+        expenseRouterForGroups.post("/:groupId/expense", expenseController.create.bind(expenseController));
         router.use('/group', expenseRouterForGroups)
 
     }

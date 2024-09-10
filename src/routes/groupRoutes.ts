@@ -8,6 +8,6 @@ export class GroupRoutes {
     registerGroupRoutes(router: Router) {
         const controller = container.resolve<IGroupController>(Tokens.groupController);
         const authController = container.resolve<IAuthController>(Tokens.authController);
-        router.post("/group", authController.midlewareToken, controller.create.bind(controller));
+        router.post("/group", controller.create.bind(controller));
     }
 }
