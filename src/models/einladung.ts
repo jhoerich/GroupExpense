@@ -1,7 +1,6 @@
 import {BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId} from "typeorm";
 import {UUID} from "node:crypto";
 import {Gruppe} from "./gruppe";
-import {Benutzer} from "./benutzer";
 
 @Entity()
 export class Einladung extends BaseEntity{

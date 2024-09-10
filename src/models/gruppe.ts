@@ -4,7 +4,6 @@ import {UUID} from "node:crypto";
 import {Benutzer} from "./benutzer";
 import {BenutzerGruppeZuordnung} from "./benutzerGruppeZuordnung";
 import {Einladung} from "./einladung";
-import e from "express";
 
 @Entity()
 export class Gruppe extends BaseEntity {
