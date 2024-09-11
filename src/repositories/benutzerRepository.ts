@@ -13,7 +13,6 @@ export class BenutzerRepository implements IBenutzerRepository {
     }
 
     async ermittleBenutzerZumBenutzernamen(name : string) : Promise<Benutzer | null>{
-        console.log(name);
         return await Benutzer
             .createQueryBuilder("benutzer")
             .where("benutzer.benutzername = :name")

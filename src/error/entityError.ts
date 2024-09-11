@@ -9,3 +9,8 @@ export class UserNotFoundError implements Error {
     key : string = "ERROR_USER_NOT_FOUND";
     message : string = "User not found!";
 }
+
+export class PasswordWrongError implements Error {
+    key : string = "ERROR_PASSWORD_WRONG";
+    message : string = "wrong password!";
+}

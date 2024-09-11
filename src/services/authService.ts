@@ -25,7 +25,7 @@ export class AuthService implements IAuthService {
     async validateForRegistration(request: AuthRegisterBody) : Promise<Error[]> {
         const validationErrors : Error[] = [];
         pushRange(await this.validateEmail(request.email), validationErrors)
-        pushRange(await this.validateBenutzername(request.benutzername), validationErrors)
+        pushRange(await this.validateBenutzername(request.username), validationErrors)
         pushRange(this.validierePasswort(request.password1, request.password2), validationErrors)
         return validationErrors
     }

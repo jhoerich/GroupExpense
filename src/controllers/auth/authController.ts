@@ -8,12 +8,13 @@ import {IBenutzerRepository} from "../../interfaces/iBenutzerRepository";
 import {inject, injectable} from "tsyringe";
 import {Tokens} from "../../config/tokens";
 import {registerAs} from "../../utils/decorator";
-import {InvalidOrExpiredTokenError, LoginNotPossibleError} from "../../error/authError";
+import {InvalidOrExpiredTokenError} from "../../error/authError";
 import {ApiRequest} from "../../framework/apiRequest";
 import {AuthLoginBody} from "./bodies/authLoginBody";
 import {AuthRegisterBody} from "./bodies/authRegisterBody";
 import {AuthRefreshBody} from "./bodies/authRefreshBody";
 import {AuthRequest} from "../../framework/requestTypes/authRequest";
+import {PasswordWrongError, UserNotFoundError} from "../../error/entityError";
 
 @registerAs(Tokens.authController)
 @injectable()
@@ -32,7 +33,7 @@ export class AuthController implements IAuthController {
         }
 
         const hashedPassword = await this.getHashedPasswort(body.password1);
-        const benutzer = await this.factoy.erzeugeBenutzer(body.benutzername,
+        const benutzer = await this.factoy.erzeugeBenutzer(body.username,
             body.email, hashedPassword);
 
         const token = generateToken(benutzer.id)
@@ -44,13 +45,12 @@ export class AuthController implements IAuthController {
         const body = req.getCastedBody<AuthLoginBody>();
         const benutzer = await this.repository.ermittleBenutzerZumBenutzernamen(body.username);
 
-        console.log(benutzer)
         if (benutzer == null) {
-            return res.status(404).json({error : new LoginNotPossibleError()});
+            return res.status(404).json({errors: [new UserNotFoundError()]});
         }
 
         if (!(await bcrypt.compare(body.password, benutzer.passwortHash))) {
-            return res.status(404).json({error: new LoginNotPossibleError()});
+            return res.status(404).json({errors: [new PasswordWrongError()]});
         }
 
         const token = generateToken(benutzer.id)
