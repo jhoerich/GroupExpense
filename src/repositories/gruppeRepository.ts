@@ -29,4 +29,12 @@ export class GruppeRepository implements IGruppeRepository {
             .setParameters({"id": gruppeId, "benutzerId": benutzerId})
             .getOne()
     }
+
+    async ladeGruppenZumBenutzer(userId : UUID) : Promise<Gruppe[] | null> {
+        return await Gruppe
+            .createQueryBuilder("gruppe")
+            .innerJoinAndSelect("gruppe.benutzerGruppenZuordnungen", "benutzerGruppenZuordnungen", "benutzerGruppenZuordnungen.benutzerId = :benutzerId")
+            .setParameters({"benutzerId": userId})
+            .getMany()
+    }
 }

@@ -1,7 +1,7 @@
 import {Router} from "express";
-import {IEventManager} from "../interfaces/iEventManager";
+import {IEventManager} from "../../interfaces/iEventManager";
 import {container} from "tsyringe";
-import {Tokens} from "../config/tokens";
+import {Tokens} from "../../config/tokens";
 
 export class EventRoutes {
     registerEventRoutes(router : Router) {

@@ -9,12 +9,12 @@ import {inject, injectable} from "tsyringe";
 import {Tokens} from "../../config/tokens";
 import {registerAs} from "../../utils/decorator";
 import {InvalidOrExpiredTokenError} from "../../error/authError";
-import {ApiRequest} from "../../framework/apiRequest";
 import {AuthLoginBody} from "./bodies/authLoginBody";
 import {AuthRegisterBody} from "./bodies/authRegisterBody";
 import {AuthRefreshBody} from "./bodies/authRefreshBody";
 import {AuthRequest} from "../../framework/requestTypes/authRequest";
 import {PasswordWrongError, UserNotFoundError} from "../../error/entityError";
+import {TokenRequest} from "../../framework/requestTypes/tokenRequest";
 
 @registerAs(Tokens.authController)
 @injectable()
@@ -65,7 +65,7 @@ export class AuthController implements IAuthController {
             if(err) {
                 verifyToken(body.longTermToken, (err, decoded) => {
                     if(err) {
-                        return res.status(401).json({error: new InvalidOrExpiredTokenError()})
+                        return res.status(401).json({errors: [new InvalidOrExpiredTokenError()]})
                     }
                     token = generateToken(decoded.userId);
                 })
@@ -74,15 +74,14 @@ export class AuthController implements IAuthController {
         return res.status(200).json({token:token, longTermToken:body.longTermToken});
     }
 
-    midlewareToken(req: ApiRequest, res: Response, next: NextFunction) {
-        const request = req.body as any;
-        const token = request.token;
+    midlewareToken(req: TokenRequest, res: Response, next: NextFunction) {
+        const token = req.token;
         if(token == undefined) {
-            return res.status(401).json({error: new InvalidOrExpiredTokenError()})
+            return res.status(401).json({errors: [new InvalidOrExpiredTokenError()]})
         }
         verifyToken(token, (err) => {
             if (err) {
-                return res.status(403).json({ error: new InvalidOrExpiredTokenError()});
+                return res.status(403).json({ error: [new InvalidOrExpiredTokenError()]});
             }
             next();
         })

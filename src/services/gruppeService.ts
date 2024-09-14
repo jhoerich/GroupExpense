@@ -1,5 +1,4 @@
 import {IGruppeService} from "../interfaces/iGruppeService";
-import { GruppeAnlegenWebApiRequest } from "../controllers/group/gruppeAnlegenWebApiRequest";
 import {ifEmpty} from "../utils/validator";
 import {pushRange} from "../utils/list";
 import {singleton} from "tsyringe";
@@ -7,13 +6,14 @@ import {registerAs} from "../utils/decorator";
 import {Tokens} from "../config/tokens";
 import {Error} from "../error/error";
 import {TextNotFoundError, UsernameTooLongError} from "../error/validationError";
+import {GroupAnlegenRequestBody} from "../controllers/group/bodies/groupAnlegenRequestBody";
 
 @registerAs(Tokens.gruppeService)
 @singleton()
 export class GruppeService implements IGruppeService {
-    validate(request: GruppeAnlegenWebApiRequest): Error[] {
+    validate(request: GroupAnlegenRequestBody): Error[] {
         const errors : Error[] = [];
-        pushRange(this.validateBezeichnung(request.gruppenName),errors);
+        pushRange(this.validateBezeichnung(request.name),errors);
         return errors;
     }
 

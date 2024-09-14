@@ -1,6 +1,6 @@
-import {GruppeAnlegenWebApiRequest} from "../controllers/group/gruppeAnlegenWebApiRequest";
 import {Error} from "../error/error";
+import {GroupAnlegenRequestBody} from "../controllers/group/bodies/groupAnlegenRequestBody";
 
 export interface IGruppeService {
-    validate(request : GruppeAnlegenWebApiRequest) : Error[];
+    validate(request : GroupAnlegenRequestBody) : Error[];
 }
